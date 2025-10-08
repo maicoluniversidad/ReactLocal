@@ -4,32 +4,38 @@ import './index.css';
 
 
 function Contador() {
-  const [pantalla, setPantalla] = useState("0");
-  const [op, setOp] = useState();
-  const [mem, setMem] = useState();
-  const click = v => {
-    if ("0123456789".includes(v)) setPantalla(pantalla === "0" ? v : pantalla + v);
-    if (v === "." && !pantalla.includes(".")) setPantalla(pantalla + ".");
-    if (["+", "-", "*", "/"].includes(v)) { setOp(v); setMem(Number(pantalla)); setPantalla("0"); }
-    if (v === "=") {
-      if (!op) return;
-      const a = mem, b = Number(pantalla);
-      let r = 0;
-      if (op === "+") r = a + b;
-      if (op === "-") r = a - b;
-      if (op === "*") r = a * b;
-      if (op === "/") r = b === 0 ? "Error" : a / b;
-      setPantalla(String(r)); setOp(); setMem();
+  const [valorPantalla, setValorPantalla] = useState("0");
+  const [operador, setOperador] = useState();
+  const [memoria, setMemoria] = useState();
+  const manejarClick = valor => {
+    // guarda los numeros y operadores
+    if ("0123456789".includes(valor)) setValorPantalla(valorPantalla === "0" ? valor : valorPantalla + valor);
+    if (["+", "-", "*", "/"].includes(valor)) { setOperador(valor); setMemoria(Number(valorPantalla)); setValorPantalla("0"); }
+    if (valor === "=") {
+      if (!operador) return;
+      const primerNumero = memoria, segundoNumero = Number(valorPantalla);
+      let resultado = 0;
+      if (operador === "+") resultado = primerNumero + segundoNumero;
+      if (operador === "-") resultado = primerNumero - segundoNumero;
+      if (operador === "*") resultado = primerNumero * segundoNumero;
+      if (operador === "/") resultado = segundoNumero === 0 ? "Error" : primerNumero / segundoNumero;
+      setValorPantalla(String(resultado)); setOperador(); setMemoria();
     }
-    if (v === "C") { setPantalla("0"); setOp(); setMem(); }
+    // eliminar con c
+    if (valor === "C") { setValorPantalla("0"); setOperador(); setMemoria(); }
   };
-  const btns = [7,8,9,"/",4,5,6,"*",1,2,3,"-",".",0,"=","+","C"];
+  // botones de la calculadora los cuales muestra
+  const botones = [7,8,9,"/",4,5,6,"*",1,2,3,"-",".",0,"=","+","C"];
   return (
-    <div className="calculadora">
-      <label className="pantalla">{pantalla}</label>
+    <div className="contador">
+      <label className="pantalla">{valorPantalla}</label>
       <div className="teclado">
-        {btns.map((b, i) => (
-          <button key={i} className={b === "C" ? "btn-reset" : ""} onClick={() => click(String(b))}>{b}</button>
+        {botones.map((boton, i) => (
+          // muesta  boton de c
+          <button 
+          key={i} className={boton === "C" ? "btn-reset" : ""} 
+          onClick={() => manejarClick(String(boton))}
+          >{boton}</button>
         ))}
       </div>
     </div>
